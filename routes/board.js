@@ -1,23 +1,22 @@
 const express = require('express');
+//const path = require('path');
 const router = express.Router();
-const path = require('path');
 
-router.get('/',(req, res)=>{
-    console.log(req.originalUrl);
+
+router.get('/',(req,res)=>{
     if(req.originalUrl==='/board'){res.redirect('board/list');}
     else if(req.originalUrl==='/board/'){res.redirect(`${req.originalUrl}list`);}
-    res.sendFile(path.join(__dirname,'../public','list.html'));
-});
-router.get('/list',(req, res)=>{
-    res.sendFile(path.join(__dirname,'../public','list.html'));
 });
 
-router.get('/write',(req, res)=>{
-    res.sendFile(path.join(__dirname,'../public','write.html'));
+router.get('/list',(req,res)=>{
+    res.render('list', {title:'게시판 목록'});
 });
 
-router.get('/view',(req, res)=>{
-    res.sendFile(path.join(__dirname,'../public','view.html'));
+router.get('/write',(req,res)=>{
+    res.render('write', {title:'게시판 새 글쓰기'});
 });
 
+router.get('/view',(req,res)=>{
+    res.render('view', {title:'게시판 본문 보기'});
+});
 module.exports = router;

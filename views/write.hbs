@@ -1,0 +1,29 @@
+{{#section 'css'}}
+    <style>
+        #writefrm {width: 570px;}
+    </style>
+{{/section}}
+{{#section 'script'}}
+{{/section}}
+<h3>게시판 본문글</h3>
+<form name="write" id="writefrm">
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title">
+    </div>
+
+    <div>
+        <label for="uid">작성자</label>
+        <input type="text" id="uid" name="uid" value="hoon" readonly>
+    </div>
+
+    <div>
+        <label for="contents" class="dragup">본문</label>
+        <textarea id="contents" name="contents" rows="7" cols="55"></textarea>
+    </div>
+
+    <div>
+        <label></label>
+        <button type="button">입력완료</button> <button type="reset">다시입력</button>
+    </div>
+</form>
