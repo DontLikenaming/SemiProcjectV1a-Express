@@ -1,0 +1,49 @@
+#wrapper{width: 100%; margin: 0 auto;}
+
+.navul{list-style:none;}
+
+.navul li{
+    float: left;
+    margin: 0 7%;}
+
+.navul li:first-child{margin-left: 10%}
+
+.navul li:last-child{margin-right: 10%}
+
+.navul a{
+    font-weight: bold;
+    text-decoration: none;
+    outline: none;
+    color: black}
+
+.navul a:visited{color: black}
+
+.navul a:hover{color: red}
+
+.navul a:active{color: orange}
+
+nav hr{
+    background: black;
+    font-weight: bold;
+}
+
+.clear{clear:both}
+
+main{min-height: 600px;}
+
+.copy{
+    text-align: center;
+    color: lightslategray;
+}
+
+form{
+    width: 350px;
+    margin: 0 auto;
+    vertical-align: middle;
+}
+div{padding: 5px;}
+label{display: inline-block; width: 110px; text-align: right; font-weight: bold;}
+form input{padding: 5px}
+button{padding: 5px;}
+
+.dragup {vertical-align: top}
