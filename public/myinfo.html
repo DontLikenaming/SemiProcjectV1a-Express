@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>myinfo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/project2.css">
+    <style>
+      .myinfo {
+        border-collapse: collapse;
+        width: 300px;
+        margin: 0 auto
+      }
+      .myinfo td {
+        padding: 5px;
+      }
+      .myinfo td:first-child{
+        font-weight: bold;
+        text-align: right
+      }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+<header><h1>JSP 프로젝트</h1></header>
+<nav>
+    <ul class="navul">
+        <li>
+            <a href="/">
+                Home
+            </a>
+        </li>
+        <li>
+            <a href="/member/join">
+                회원가입
+            </a>
+        </li>
+        <li>
+            <a href="/member/login">
+                로그인
+            </a>
+        </li>
+        <li>
+            <a href="/board/list">
+                게시판
+            </a>
+        </li>
+        <li>
+            <a href="/member/myinfo">
+                회원정보
+            </a>
+        </li>
+    </ul>
+    <hr class="clear">
+  </nav>
+<main>
+  <h3>회원정보</h3>
+    <table class="myinfo">
+      <tr><td>아이디</td><td>siestageek</td></tr>
+      <tr><td>이름</td><td>으하하하</td></tr>
+      <tr><td>이메일</td><td>zzyzigy@naver.com</td></tr>
+      <tr><td>가입일</td><td>2014-05-01&nbsp;12:01:33</td></tr>
+    </table>
+</main>
+<footer>
+    <div>
+      <hr class="clear">
+      <div class="copy">copyright &copy; 2014. 2017. hoon. All Rights Reserved</div>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
