@@ -3,6 +3,7 @@ const path = require('path');
 const logger = require('morgan');
 const {engine} = require("express-handlebars");
 const bodyPaser = require('body-parser');
+const session = require('express-session');
 const oracledb = require('./models/Oracle');
 
 const indexRouter = require('./routes/index');
@@ -23,6 +24,18 @@ app.engine('hbs',engine({extname:'.hbs', defaultLayout:'layout',
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','hbs');
 
+// 세션
+const maxAge = 1000 * 30;
+const sessionObj = {
+    resave: false, saveUninitialized: false,
+    // secret: process.env.COOKIE_SECRET,
+    secret: 'process.env.COOKIE_SECRET',
+    cookie: { httpOnly: true, secure: false, },
+    name: 'session-cookie',
+    maxAge: maxAge
+};
+app.use(session(sessionObj));
+
 app.use(express.static(path.join(__dirname,'static')));
 
 app.use(logger('dev'));
@@ -32,6 +45,12 @@ app.use(express.urlencoded({extended:false}));
 app.use(bodyPaser.json());
 
 oracledb.initConn();
+
+//생성한 세션을 모든 페이지에서 접근 가능하게 함
+app.use(function(req, res, next){
+    res.locals.session = req.session;
+    next();
+});
 
 app.use('/',indexRouter);
 app.use('/member',memberRouter);

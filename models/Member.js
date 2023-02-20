@@ -3,7 +3,7 @@ const oracledb = require('../models/Oracle');
 let membersql = {
     insertsql : ' insert into member (mno, userid, passwd, name, email) values ' +
     ' (mno.nextval, :1, :2, :3, :4) ',
-    logsql : ' select userid, passwd from member '
+    loginsql : ' select count(mno) cnt from member where userid = :1 and passwd = :2 '
 };
 
 class Member {
@@ -36,33 +36,25 @@ class Member {
             await oracledb.closeConn(conn);
         }
     }
-    async log(){
+    async login(uid, pwd){
         let conn = null;
-        let test = [];
-        let check = 0;
+        let params = [uid, pwd];
+        let isLogin = 0;
         try{
             conn = await oracledb.makeConn();
 
-            let result = await conn.execute(membersql.logsql, [], oracledb.options);
+            let result = await conn.execute(membersql.loginsql, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
             let row = null;
-            while(row = await rs.getRow()){
-                let log = new Member(null, row.USERID, row.PASSWD, null, null, null);
-                test.push(log);
-            }
-                for(let i=0;i<test.length;i++) {
-                    if ((this.userid === test[i].userid) && (this.passwd === test[i].passwd)) check = 1;
-                }
-
-            if(check===1)console.log(`환영합니다. ${this.userid}님.`);
-            else{console.log(`잘못 입력하셨습니다.`);}
+            while((row = await rs.getRow()))isLogin = row.CNT;
 
         }catch (e){console.log(e)}
         finally {
             await oracledb.closeConn(conn);
         }
-        return check;
+        //console.log(await isLogin);
+        return isLogin;
     }
 }
 module.exports = Member;

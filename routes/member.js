@@ -27,12 +27,20 @@ router.get('/login',(req,res)=>{
 });
 
 router.post('/login',async (req,res)=>{
-    let viewName = '/';
+    let viewName = '/member/loginfail';
     let {userid, passwd} = req.body
-    let rowcnt = new Member(null, userid, passwd, null, null, null).log()
+    let rowcnt = new Member().login(userid, passwd)
         .then((result)=>result);
-    if(await rowcnt === 0) viewName = '/member/login';
+    if(await rowcnt > 0){
+        viewName = '/member/myinfo';
+        req.session.userid = userid;    //입력받은 id를 세션변수로 등록
+    }
     res.redirect(303,viewName);
+});
+
+router.get('/logout',(req,res)=>{
+    req.session.destroy(()=>req.session);
+    res.redirect(303, '/');
 });
 
 router.get('/myinfo',(req,res)=>{

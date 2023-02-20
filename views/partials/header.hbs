@@ -11,11 +11,19 @@
                 회원가입
             </a>
         </li>
+        {{#if session.userid}}
+        <li>
+            <a href="/member/logout">
+                로그아웃
+            </a>
+        </li>
+        {{else}}
         <li>
             <a href="/member/login">
                 로그인
             </a>
         </li>
+        {{/if}}
         <li>
             <a href="/board/list">
                 게시판

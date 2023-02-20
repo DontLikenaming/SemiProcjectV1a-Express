@@ -1,4 +1,4 @@
-const processLog = () => {
+const processLogin = () => {
     let logfrm = document.logfrm;
     if (logfrm.userid.value === '')alert("아이디를 입력하세요!");
     else if (logfrm.passwd.value === '')alert("비밀번호를 입력하세요!");
@@ -10,4 +10,4 @@ const processLog = () => {
 }
 
 let loginbtn = document.querySelector(`#loginbtn`);
-loginbtn.addEventListener(`click`, processLog);
+loginbtn.addEventListener(`click`, processLogin);
