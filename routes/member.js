@@ -1,5 +1,6 @@
 const express = require('express');
 const Member = require('../models/Member');
+const Board = require("../models/Board");
 const router = express.Router();
 
 
@@ -23,6 +24,15 @@ router.get('/join',(req,res)=>{
 
 router.get('/login',(req,res)=>{
     res.render('login', {title:'회원로그인'});
+});
+
+router.post('/login',async (req,res)=>{
+    let viewName = '/';
+    let {userid, passwd} = req.body
+    let rowcnt = new Member(null, userid, passwd, null, null, null).log()
+        .then((result)=>result);
+    if(await rowcnt === 0) viewName = '/member/login';
+    res.redirect(303,viewName);
 });
 
 router.get('/myinfo',(req,res)=>{

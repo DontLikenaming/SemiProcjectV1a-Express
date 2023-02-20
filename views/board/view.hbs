@@ -1,0 +1,60 @@
+{{#section 'css'}}
+    <style>
+        #view{
+            width: 700px;
+            margin: 0 auto;
+        }
+
+        label{
+            display: inline-block;
+            width: 110px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        #contents{
+            border: 1px solid #dddddd;
+            display: inline-block;
+            width: 560px;
+            min-height: 300px;
+            white-space: pre;
+        }
+    </style>
+{{/section}}
+{{#section 'script'}}
+{{/section}}
+<h2>게시판 본문</h2>
+<div id="view">
+    <div>
+        <label>제목</label>
+        {{#bds}}
+        <span>{{title}}</span>
+        {{/bds}}
+    </div>
+
+    <div>
+        <label>작성자</label>
+        {{#bds}}
+        <span>{{userid}}</span>
+        {{/bds}}
+    </div>
+
+    <div>
+        <label>작성일</label>
+        {{#bds}}
+        <span>{{regdate}}</span>
+        {{/bds}}
+    </div>
+
+    <div>
+        <label class="dragup">본 문</label>
+        <span id="contents">{{#bds}}{{contents}}{{/bds}}</span>
+    </div>
+
+    <div>
+        <label></label>
+        <button type="button" onclick="location.href='/board/write'">새글쓰기</button>
+        <button type="button" onclick="location.href='/board/list'">목록으로</button>
+        <button type="button" id="updatebtn">수정하기</button>
+        <button type="button" id="deletebtn">삭제하기</button>
+    </div>
+</div>

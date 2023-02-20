@@ -4,6 +4,7 @@
     </style>
 {{/section}}
 {{#section 'script'}}
+    <script src="/js/write.js"></script>
 {{/section}}
 <h3>게시판 본문글</h3>
 <form name="write" id="writefrm">
@@ -14,7 +15,7 @@
 
     <div>
         <label for="uid">작성자</label>
-        <input type="text" id="uid" name="uid" value="hoon" readonly>
+        <input type="text" id="userid" name="userid" value="hoon" readonly>
     </div>
 
     <div>
@@ -24,6 +25,6 @@
 
     <div>
         <label></label>
-        <button type="button">입력완료</button> <button type="reset">다시입력</button>
+        <button type="button" id="wrtbtn" name="wrtbtn">입력완료</button> <button type="reset">다시입력</button>
     </div>
 </form>

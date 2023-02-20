@@ -1,0 +1,69 @@
+{{#section 'css'}}
+    <style>
+        .board {
+            width: 700px; margin: 0 auto;
+            table-layout: fixed;
+        }
+        .alignrgt {text-align-last: right}
+        .board td {text-align: center; padding: 7px;}
+        .board {text-align: center; padding: 7px;}
+        .board th {padding: 7px; background: lightgreen}
+        .board td:nth-child(2) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+        .board tr:nth-child(odd) {background: #bce55c}
+        .board tr:nth-child(even) {background: #e4f7ba}
+
+        .pagenation {
+            list-style: none;
+            margin: 0 auto; padding: 0;
+            width: 435px;
+        }
+        .pagenation li {
+            display: inline-block;
+            padding: 10px;
+        }
+        .cpage {
+            font: bold 48px '맑은고딕';
+            color: red;
+        }
+        .prev {color: #cccccc}
+    </style>
+{{/section}}
+{{#section 'script'}}
+{{/section}}
+<h3>게시판</h3>
+<table class="board">
+    <colgroup><!-- 각 컬럼에 디자인 적용 가능 -->
+        <col style="width: 10%">
+        <col>
+        <col style="width: 15%">
+        <col style="width: 15%">
+        <col style="width: 10%">
+    </colgroup>
+    <tr><Td colspan="5" class="alignrgt"><button type="button" onclick="location.href='/board/write'">새글쓰기</button></Td></tr>
+    <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회</th>
+    </tr>
+    {{#bds}}
+        <tr>
+            <td>{{bno}}</td>
+            <td><a href="/board/view?bno={{bno}}">{{title}}</a></td>
+            <td>{{userid}}</td>
+            <td>{{regdate}}</td>
+            <td>{{views}}</td>
+        </tr>
+    {{/bds}}
+</table>
+<ul class="pagenation">
+    <li class="prev">이전</li>
+    <li class="cpage">1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li>
+    <li>다음</li>
+</ul>
