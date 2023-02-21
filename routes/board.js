@@ -39,7 +39,35 @@ router.post('/write',async (req,res)=>{
 router.get('/view',async (req,res)=>{
     let bno = req.query.bno;
     let bds = new Board().selectOne(bno).then(async bds => {return bds;});
-    res.render('board/view', {title:'게시판 본문 보기', bds : await bds});
+    res.render('board/view', {title:'게시글 본문 보기', bds : await bds});
+});
+
+router.post('/update',async (req,res)=>{
+    let {title, userid, contents} = req.body;
+    let bno = req.query.bno;
+    let suid = req.session.userid;
+
+    if(suid && userid &&(suid === userid)) {
+        new Board(bno, title, 0, contents, 0, 0).update().then((cnt) => cnt);
+        //console.log(await cnt);
+        res.redirect(303,`/board/view?bno=${bno}`);
+    } else {
+        res.redirect(303, '/board/list');
+    }
+
+});
+
+router.get('/update',async (req,res)=>{
+    let suid = req.session.userid;
+    let {userid, bno} = req.query;
+    console.log(bno);
+    if(suid && userid &&(suid === userid)) {
+        let bds = new Board().selectOne(bno).then((bds) => bds);
+        //console.log(await bds);
+        res.render('board/update', {title: "게시글 수정하기", bds:await bds});
+    } else {
+        res.redirect(303, '/list')
+    }
 });
 
 router.get('/delete',async (req,res)=>{

@@ -5,9 +5,9 @@ let userid = document.querySelector('#userid').value;
 
 updatebtn?.addEventListener('click',()=>{
     if(confirm('정말 수정하시겠습니까?'))
-    location.href = '/board/update?bno=' + bno + '&uid=' + userid;
+    location.href = '/board/update?bno=' + bno + '&userid=' + userid;
 });
 deletebtn?.addEventListener('click',()=>{
     if(confirm('정말 삭제하시겠습니까?'))
-    location.href = '/board/delete?bno=' + bno + '&uid=' + userid;
+    location.href = '/board/delete?bno=' + bno + '&userid=' + userid;
 });

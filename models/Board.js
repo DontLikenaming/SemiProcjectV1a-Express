@@ -5,11 +5,11 @@ let boardsql = {
                 ' (bno.nextval, :1, :2, :3) ' ,
     select : ` select BNO, TITLE, USERID, VIEWS, to_char(regdate,'yyyy-mm-dd') regdate ` +
                 ` from board order by bno desc `,
+    selectCount : ` select count(bno) cnt from board `,
     selectOne : ` select bno, title, userid, contents, to_char(regdate,'yyyy-mm-dd hh-mi-ss') regdate ` +
                    ` from board where bno = :1 `,
     viewOne : ` update board set views = views+1 where bno = :1 `,
-    update : ` update board set title = :1, contents = :2 ` +
-             ` where bno = :3; `,
+    update : ` update board set title = :2, contents = :3, regdate = current_timestamp where bno = :1 `,
     delete : ` delete from board where bno = :1 `,
     check : ` select bno from board where  `
 };
@@ -51,12 +51,21 @@ class Board {
 
         try{
             conn = await oracledb.makeConn();
-            result = await conn.execute(boardsql.select, params, oracledb.options);
+
+            result = await conn.execute(boardsql.selectCount, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
-            let row = null;
+            let idx = -1, row = null;
+            if((row = await rs.getRow()))idx = row.CNT;  //총 게시글 수
+
+
+            result = await conn.execute(boardsql.select, params, oracledb.options);
+            await conn.commit();
+            rs = result.resultSet;
+            row = null;
             while((row = await rs.getRow())) {
                 let bd = new Board(row.BNO, row.TITLE, row.USERID, null, row.VIEWS, row.REGDATE);
+                bd.idx = idx--; //글번호 컬럼
                 bds.push(bd);
             }
         }catch (e){console.log(e)}
@@ -92,16 +101,22 @@ class Board {
         }
         return bds;
     }
-    async update(bno){
+    async update(){
         let conn = null;
-        let params = [];
+        let params = [this.bno, this.title, this.contents];
         let insertcnt = 0;
         try{
+            conn = await oracledb.makeConn();
+            let result = await conn.execute(boardsql.update, params);
+            await conn.commit();
+
+            if(result.rowsAffected > 0) insertcnt = result.rowsAffected;
+
+            return insertcnt;
         }catch (e){console.log(e)}
         finally {
             await oracledb.closeConn(conn);
         }
-        return await brd;
     }
     async delete(bno){
         let conn = null;
