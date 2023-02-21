@@ -14,12 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.engine('hbs',engine({extname:'.hbs', defaultLayout:'layout',
-    helpers: {
-        section: function(name, options) {
-            if(!this._sections) this._sections = {}
-            this._sections[name] = options.fn(this)
-            return null
-        },},
+    helpers: require('./helpers/handlebars-helper'),
 }));
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','hbs');
