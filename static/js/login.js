@@ -10,4 +10,12 @@ const processLogin = () => {
 }
 
 let loginbtn = document.querySelector(`#loginbtn`);
+let userid = document.querySelector(`#userid`);
+let passwd = document.querySelector(`#passwd`);
 loginbtn.addEventListener(`click`, processLogin);
+userid.addEventListener('keydown',(event) =>{
+    if(event.key==='Enter') processLogin();
+});
+passwd.addEventListener('keydown',(event) =>{
+   if(event.key==='Enter') processLogin();
+});

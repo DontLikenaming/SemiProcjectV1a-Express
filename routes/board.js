@@ -17,7 +17,11 @@ router.get('/list',async (req,res)=>{
 });
 
 router.get('/write',(req,res)=>{
-    res.render('board/write', {title:'게시판 새 글쓰기'});
+    if(req.session.userid){
+        res.render('board/write', {title:'게시판 새 글쓰기'});
+    }else {
+        res.redirect(303,'/member/login');
+    }
 });
 
 router.post('/write',async (req,res)=>{
@@ -36,5 +40,18 @@ router.get('/view',async (req,res)=>{
     let bno = req.query.bno;
     let bds = new Board().selectOne(bno).then(async bds => {return bds;});
     res.render('board/view', {title:'게시판 본문 보기', bds : await bds});
+});
+
+router.get('/delete',async (req,res)=>{
+    let check1 = req.originalUrl;
+    let check2 = "/board/delete";
+    let suid = req.session.userid;
+    let {userid, bno} = req.query;
+    if(check1.match(check2)){res.redirect(303,'/member/login');}
+    else if(suid && userid &&(suid === userid)) {   //글 작성자와 삭제 시도자가 일치하는 경우
+        new Board().delete(bno).then((insertcnt) => insertcnt);
+        //console.log(await bds);
+        res.redirect(303,'/board/list');
+    }
 });
 module.exports = router;

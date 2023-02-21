@@ -21,6 +21,7 @@
     </style>
 {{/section}}
 {{#section 'script'}}
+    <script src="/js/view.js"></script>
 {{/section}}
 <h2>게시판 본문</h2>
 <div id="view">
@@ -30,26 +31,24 @@
         <span>{{title}}</span>
         {{/bds}}
     </div>
-
     <div>
         <label>작성자</label>
         {{#bds}}
         <span>{{userid}}</span>
         {{/bds}}
     </div>
-
     <div>
         <label>작성일</label>
         {{#bds}}
         <span>{{regdate}}</span>
         {{/bds}}
     </div>
-
     <div>
         <label class="dragup">본 문</label>
         <span id="contents">{{#bds}}{{contents}}{{/bds}}</span>
     </div>
-
+    <input type="hidden" id="bno" value="{{#bds}}{{bno}}{{/bds}}">
+    <input type="hidden" id="bno" value="{{#bds}}{{userid}}{{/bds}}">
     <div>
         <label></label>
 {{#if session.userid}}
@@ -57,8 +56,8 @@
 {{/if}}
         <button type="button" onclick="location.href='/board/list'">목록으로</button>
 {{#if (eq session.userid bds.[0].userid)}}
-        <button type="button" id="updatebtn">수정하기</button>
-        <button type="button" id="deletebtn">삭제하기</button>
+        <button type="button" id="updatebtn" name="updatebtn">수정하기</button>
+        <button type="button" id="deletebtn" name="deletebtn">삭제하기</button>
 {{/if}}
     </div>
 </div>

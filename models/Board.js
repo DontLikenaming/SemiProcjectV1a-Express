@@ -11,6 +11,7 @@ let boardsql = {
     update : ` update board set title = :1, contents = :2 ` +
              ` where bno = :3; `,
     delete : ` delete from board where bno = :1 `,
+    check : ` select bno from board where  `
 };
 
 class Board {
@@ -35,7 +36,7 @@ class Board {
 
             if(result.rowsAffected > 0) insertcnt = result.rowsAffected;
 
-            return result.rowsAffected;
+            return insertcnt;
 
         }catch (e){console.log(e)}
         finally {
@@ -104,14 +105,21 @@ class Board {
     }
     async delete(bno){
         let conn = null;
-        let params = [];
         let insertcnt = 0;
+        let check = 0;
+        let params = [bno];
         try{
+            conn = await oracledb.makeConn();
+            let result = await conn.execute(boardsql.delete, params);
+            await conn.commit();
+
+            if(result.rowsAffected > 0) insertcnt = result.rowsAffected;
+
+            return insertcnt;
         }catch (e){console.log(e)}
         finally {
             await oracledb.closeConn(conn);
         }
-        return await brd;
     }
 }
 module.exports = Board;
