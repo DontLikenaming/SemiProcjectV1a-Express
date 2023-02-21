@@ -45,7 +45,7 @@ router.get('/logout',(req,res)=>{
 
 router.get('/myinfo',async (req,res)=>{
     if(req.session.userid){
-        let mem = new Member().info(req.session.userid).then(( mem) =>
+        let mem = new Member().selectOne(req.session.userid).then(( mem) =>
             mem);
         //console.log(await mem);
         res.render('myinfo', {title: '회원정보', mem: await mem});

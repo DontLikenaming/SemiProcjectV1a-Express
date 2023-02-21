@@ -4,17 +4,15 @@ let membersql = {
     insertsql : ' insert into member (mno, userid, passwd, name, email) values ' +
     ' (mno.nextval, :1, :2, :3, :4) ',
     loginsql : ' select count(mno) cnt from member where userid = :1 and passwd = :2 ',
-    myinfosql : ' select userid, name, email, to_char(regdata, \'yyyy-mm-dd\') regdata from member where userid = :1 '
+    selectOne : ` select userid, name, email, to_char(regdata, 'yyyy-mm-dd HH24:MI:SS') regdata from member where userid = :1 `
 };
 
 class Member {
-    constructor(mno, userid, passwd, name, email, regdata) {
-        this.mno = mno;
+    constructor(userid, passwd, name, email) {
         this.userid = userid;
         this.passwd = passwd;
         this.name = name;
         this.email = email;
-        this.regdata = regdata;
     }
     async insert(){
         let conn = null;
@@ -57,7 +55,7 @@ class Member {
         //console.log(await isLogin);
         return isLogin;
     }
-    async info(uid){
+    async selectOne(uid){
         let conn = null;
         let params = [uid];
         //console.log(uid);
@@ -65,13 +63,14 @@ class Member {
         try{
             conn = await oracledb.makeConn();
 
-            let result = await conn.execute(membersql.myinfosql, params, oracledb.options);
+            let result = await conn.execute(membersql.selectOne, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let mm = new Member(null, row.USERID, null, row.NAME, row.EMAIL, row.REGDATA);
-                mem.push(mm);
+                let m = new Member(row.USERID, null, row.NAME, row.EMAIL);
+                m.regdata = row.REGDATA;
+                mem.push(m);
             }
         }catch (e){console.log(e)}
         finally {
