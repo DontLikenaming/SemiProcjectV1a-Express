@@ -6,18 +6,23 @@
                 Home
             </a>
         </li>
+        {{#if session.userid}}
         <li>
-            <a href="/member/join">
+            <a href="#">
                 회원가입
             </a>
         </li>
-        {{#if session.userid}}
         <li>
             <a href="/member/logout">
                 로그아웃
             </a>
         </li>
         {{else}}
+        <li>
+            <a href="/member/join">
+                회원가입
+            </a>
+        </li>
         <li>
             <a href="/member/login">
                 로그인

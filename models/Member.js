@@ -3,7 +3,8 @@ const oracledb = require('../models/Oracle');
 let membersql = {
     insertsql : ' insert into member (mno, userid, passwd, name, email) values ' +
     ' (mno.nextval, :1, :2, :3, :4) ',
-    loginsql : ' select count(mno) cnt from member where userid = :1 and passwd = :2 '
+    loginsql : ' select count(mno) cnt from member where userid = :1 and passwd = :2 ',
+    myinfosql : ' select userid, name, email, to_char(regdata, \'yyyy-mm-dd\') regdata from member where userid = :1 '
 };
 
 class Member {
@@ -55,6 +56,29 @@ class Member {
         }
         //console.log(await isLogin);
         return isLogin;
+    }
+    async info(uid){
+        let conn = null;
+        let params = [uid];
+        //console.log(uid);
+        let mem = [];
+        try{
+            conn = await oracledb.makeConn();
+
+            let result = await conn.execute(membersql.myinfosql, params, oracledb.options);
+            await conn.commit();
+            let rs = result.resultSet;
+            let row = null;
+            while((row = await rs.getRow())){
+                let mm = new Member(null, row.USERID, null, row.NAME, row.EMAIL, row.REGDATA);
+                mem.push(mm);
+            }
+        }catch (e){console.log(e)}
+        finally {
+            await oracledb.closeConn(conn);
+        }
+        //console.log(mem);
+        return mem;
     }
 }
 module.exports = Member;

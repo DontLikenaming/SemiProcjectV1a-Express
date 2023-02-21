@@ -34,6 +34,15 @@
     </style>
 {{/section}}
 {{#section 'script'}}
+    <script>
+        let newbtn = document.querySelector('#newbtn');
+        //optional chaining (?.)
+        //?앞의 객체변수가 null이거나 undefined라면
+        //.뒤의 코드를 실행하지 않음
+        newbtn?.addEventListener('click',()=>{
+        location.href = '/board/write';
+        });
+    </script>
 {{/section}}
 <h3>게시판</h3>
 <table class="board">
@@ -44,7 +53,14 @@
         <col style="width: 15%">
         <col style="width: 10%">
     </colgroup>
-    <tr><Td colspan="5" class="alignrgt"><button type="button" onclick="location.href='/board/write'">새글쓰기</button></Td></tr>
+
+    <tr>
+        <Td colspan="5" class="alignrgt">
+                {{#if session.userid}}
+                    <button type="button" id="newbtn" name="newbtn">새글쓰기</button>
+                {{else}}&nbsp;{{/if}}
+        </Td>
+    </tr>
     <tr>
         <th>번호</th>
         <th>제목</th>

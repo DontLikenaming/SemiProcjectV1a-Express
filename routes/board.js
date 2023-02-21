@@ -34,7 +34,7 @@ router.post('/write',async (req,res)=>{
 
 router.get('/view',async (req,res)=>{
     let bno = req.query.bno;
-    let bds = new Board().selectOne(bno).then(async bds => {return await bds;});
+    let bds = new Board().selectOne(bno).then(async bds => {return bds;});
     res.render('board/view', {title:'게시판 본문 보기', bds : await bds});
 });
 module.exports = router;

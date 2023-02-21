@@ -43,7 +43,14 @@ router.get('/logout',(req,res)=>{
     res.redirect(303, '/');
 });
 
-router.get('/myinfo',(req,res)=>{
-    res.render('myinfo', {title:'회원정보'});
+router.get('/myinfo',async (req,res)=>{
+    if(req.session.userid){
+        let mem = new Member().info(req.session.userid).then(( mem) =>
+            mem);
+        //console.log(await mem);
+        res.render('myinfo', {title: '회원정보', mem: await mem});
+        }else {
+        res.redirect('/member/login');
+    }
 });
 module.exports = router;
