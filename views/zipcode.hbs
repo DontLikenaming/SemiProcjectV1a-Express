@@ -1,22 +1,37 @@
 {{#section 'css'}}
 {{/section}}
 {{#section 'script'}}
+    <script src="/js/zipcode.js"></script>
+    <script>
+        {{#if sido}}
+        document.querySelector('#sido').value = '{{sido}}';
+        {{/if}}
+        {{#if gugun}}
+        document.querySelector('#gugun').value = '{{gugun}}';
+        {{/if}}
+        {{#if dong}}
+        document.querySelector('#dong').value = '{{dong}}';
+        {{/if}}
+    </script>
 {{/section}}
 
 <main>
     <h1>시군구동 찾기</h1>
-    <div>
-        <select name="sido" id="sido">
-            <option>-- 시도 --</option>
-        </select>
-        <select name="gugun" id="gugun">
-            <option>-- 구군 --</option>
-        </select>
-        <select name="dong" id="dong">
-            <option>-- 읍면동 --</option>
-        </select>
-    </div>
-    <div>
-        <p></p>
-    </div>
+        <div>
+            <select name="sido" id="sido">
+                <option>-- 시도 --</option>
+                {{#sidos}}<option>{{sido}}</option>{{/sidos}}
+            </select>
+            <select name="gugun" id="gugun">
+                <option>-- 구군 --</option>
+                {{#guguns}}<option>{{gugun}}</option>{{/guguns}}
+            </select>
+            <select name="dong" id="dong">
+                <option>-- 읍면동 --</option>
+                {{#dongs}}<option>{{dong}}</option>{{/dongs}}
+            </select>
+        </div>
+        <div>
+            <p>{{#zips}}{{zipcode}}{{/zips}}</p>
+        </div>
 </main>
