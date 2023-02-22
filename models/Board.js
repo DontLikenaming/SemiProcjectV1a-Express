@@ -9,7 +9,8 @@ let boardsql = {
     selectOne : ` select bno, title, userid, contents, to_char(regdate,'yyyy-mm-dd hh-mi-ss') regdate ` +
                    ` from board where bno = :1 `,
     viewOne : ` update board set views = views+1 where bno = :1 `,
-    update : ` update board set title = :2, contents = :3, regdate = current_timestamp where bno = :1 `,
+    update: ' update board set title = :1, contents = :2, ' +
+        ' regdate = current_timestamp where bno = :3 ',
     delete : ` delete from board where bno = :1 `,
     check : ` select bno from board where  `
 };
@@ -103,16 +104,18 @@ class Board {
     }
     async update(){
         let conn = null;
-        let params = [this.bno, this.title, this.contents];
-        let insertcnt = 0;
+        let params = [this.title, this.contents, this.bno];
+        console.log(this.title, this.contents, this.bno);
+        let updatecnt = 0;
+        let bds = [];
         try{
             conn = await oracledb.makeConn();
             let result = await conn.execute(boardsql.update, params);
             await conn.commit();
 
-            if(result.rowsAffected > 0) insertcnt = result.rowsAffected;
+            if(result.rowsAffected > 0) updatecnt = result.rowsAffected;
 
-            return insertcnt;
+            return updatecnt;
         }catch (e){console.log(e)}
         finally {
             await oracledb.closeConn(conn);

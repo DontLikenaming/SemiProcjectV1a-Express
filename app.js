@@ -9,6 +9,7 @@ const oracledb = require('./models/Oracle');
 const indexRouter = require('./routes/index');
 const memberRouter = require('./routes/member');
 const boardRouter = require('./routes/board');
+const zipcodeRouter = require('./routes/zipcode');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -49,6 +50,7 @@ app.use(function(req, res, next){
 app.use('/',indexRouter);
 app.use('/member',memberRouter);
 app.use('/board',boardRouter);
+app.use('/zipcode',zipcodeRouter);
 
 app.use((req,res)=>{
     res.status(404);
