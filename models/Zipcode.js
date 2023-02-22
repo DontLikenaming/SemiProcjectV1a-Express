@@ -7,10 +7,13 @@ let zipcodesql={
     zipsql : ' select * from zipcode2013 where sido = :1 and gugun = :2 and dong = :3 order by zipcode '
 }
 class Zipcode{
-    constructor(sido, gugun, dong) {
+    constructor(zipcode, sido, gugun, dong, ri, bunji) {
+        this.zipcode = zipcode;
         this.sido = sido;
         this.gugun = gugun;
         this.dong = dong;
+        this.ri = ri;
+        this.bunji = bunji;
     }
     async getSido(){
         let conn = null;
@@ -23,7 +26,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let sd = new Zipcode(row.SIDO, null, null);
+                let sd = new Zipcode(null, row.SIDO, null, null, null, null);
                 sidos.push(sd);
             }
         }
@@ -46,7 +49,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let gg = new Zipcode(null, row.GUGUN, null);
+                let gg = new Zipcode(null, null, row.GUGUN, null, null, null);
                 guguns.push(gg);
             }
         }
@@ -69,7 +72,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while ((row = await rs.getRow())) {
-                let dg = new Zipcode(null, null, row.DONG);
+                let dg = new Zipcode(null, null, null, row.DONG, null, null);
                 dongs.push(dg);
             }
         }
@@ -87,12 +90,12 @@ class Zipcode{
         let zips = [];
         try{
             conn = await oracledb.makeConn();
-            let result = await conn.execute(zipcodesql.zipsql);
+            let result = await conn.execute(zipcodesql.zipsql, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let zp = new Zipcode(row.SIDO,row.GUGUN,row.DONG);
+                let zp = new Zipcode(row.ZIPCODE, row.SIDO, row.GUGUN, row.DONG, row.RI, row.BUNJI);
                 zips.push(zp);
             }
         }

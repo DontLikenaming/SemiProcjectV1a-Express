@@ -17,12 +17,12 @@ router.get('/',async (req,res)=> {
     if(sido !== undefined && gugun !== undefined) {
         dongs = new Zipcode().getDong(sido, gugun).then((dongs) => dongs);
     }
-/*    if(sido !== undefined && gugun !== undefined && dongs !== undefined) {
-        zips = new Zipcode().getZipcode(sido, gugun, dong).then((dongs) => dongs);
-    }*/
-    //console.log(await dongs);
+    if(sido !== undefined && gugun !== undefined && dongs !== undefined) {
+        zips = new Zipcode().getZipcode(sido, gugun, dong).then((zips) => zips);
+    }
+    //console.log(await zips);
     res.render('zipcode', {title:'시군구동 찾기',
-        sidos: await sidos, guguns: await guguns, dongs: await dongs,
+        sidos: await sidos, guguns: await guguns, dongs: await dongs, zips: await zips,
         sido: sido, gugun: gugun, dong: dong});
 });
 
