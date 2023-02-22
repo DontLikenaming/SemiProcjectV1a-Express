@@ -72,7 +72,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while ((row = await rs.getRow())) {
-                let dg = new Zipcode(null, null, null, row.DONG, null, null);
+                let dg = {'dong': row.DONG};
                 dongs.push(dg);
             }
         }
