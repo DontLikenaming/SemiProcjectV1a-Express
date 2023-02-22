@@ -21,7 +21,7 @@ router.get('/',async (req,res)=> {
         zips = new Zipcode().getZipcode(sido, gugun, dong).then((zips) => zips);
     }
     //console.log(await zips);
-    res.render('zipcode', {title:'시군구동 찾기',
+    res.render('zipcode', {title:'주소찾기',
         sidos: await sidos, guguns: await guguns, dongs: await dongs, zips: await zips,
         sido: sido, gugun: gugun, dong: dong});
 });

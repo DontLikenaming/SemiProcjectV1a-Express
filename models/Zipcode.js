@@ -26,7 +26,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let sd = new Zipcode(null, row.SIDO, null, null, null, null);
+                let sd = {'sido': row.SIDO};
                 sidos.push(sd);
             }
         }
@@ -49,7 +49,7 @@ class Zipcode{
             let rs = result.resultSet;
             let row = null;
             while((row = await rs.getRow())){
-                let gg = new Zipcode(null, null, row.GUGUN, null, null, null);
+                let gg = {'gugun': row.GUGUN};
                 guguns.push(gg);
             }
         }
