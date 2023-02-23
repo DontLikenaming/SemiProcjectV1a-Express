@@ -5,6 +5,9 @@ let boardsql = {
                 ' (bno.nextval, :1, :2, :3) ' ,
     select : ` select BNO, TITLE, USERID, VIEWS, to_char(regdate,'yyyy-mm-dd') regdate ` +
                 ` from board order by bno desc `,
+    paging1 : ` select * from (select BNO, TITLE, USERID, VIEWS, to_char(regdate,'yyyy-mm-dd') regdate, ` +
+        ` row_number() over (order by bno desc) rowno from board) bd `,
+    paging2 : ` where rowno >= :1 and rowno <= :2 `,
     selectCount : ` select count(bno) cnt from board `,
     selectOne : ` select bno, title, userid, contents, to_char(regdate,'yyyy-mm-dd hh-mi-ss') regdate ` +
                    ` from board where bno = :1 `,
@@ -44,26 +47,25 @@ class Board {
             await oracledb.closeConn(conn);
         }
     }
-    async select(){
+    async select(pagenum){
         let conn = null;
         let result = null;
-        let params = [];
+        let ppg = 15
+        let maxnum = pagenum * ppg;
+        let minnum = maxnum - (ppg - 1);
+        let params = [minnum, maxnum];
         let bds = [];
-
         try{
             conn = await oracledb.makeConn();
 
-            result = await conn.execute(boardsql.selectCount, params, oracledb.options);
+            let idx = await this.selectCount();   //총 게시글 수 계산
+            idx = idx-(ppg*(pagenum-1));
+
+
+            result = await conn.execute(boardsql.paging1 + boardsql.paging2, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
-            let idx = -1, row = null;
-            if((row = await rs.getRow()))idx = row.CNT;  //총 게시글 수
-
-
-            result = await conn.execute(boardsql.select, params, oracledb.options);
-            await conn.commit();
-            rs = result.resultSet;
-            row = null;
+            let row = null;
             while((row = await rs.getRow())) {
                 let bd = new Board(row.BNO, row.TITLE, row.USERID, null, row.VIEWS, row.REGDATE);
                 bd.idx = idx--; //글번호 컬럼
@@ -138,6 +140,26 @@ class Board {
         finally {
             await oracledb.closeConn(conn);
         }
+    }
+    async selectCount(){
+        let conn = null;
+        let result = null;
+        let params = [];
+        let idx = -1
+            try{
+            conn = await oracledb.makeConn();
+
+            result = await conn.execute(boardsql.selectCount, params, oracledb.options);
+            await conn.commit();
+            let rs = result.resultSet;
+            let row = null;
+            if((row = await rs.getRow()))idx = row.CNT;
+
+        }catch (e){console.log(e)}
+        finally {
+            await oracledb.closeConn(conn);
+        }
+        return idx;
     }
 }
 module.exports = Board;

@@ -1,7 +1,6 @@
 const express = require('express');
 const Board = require('../models/Board');
 const {raw} = require("express");
-//const path = require('path');
 const router = express.Router();
 
 
@@ -11,9 +10,29 @@ router.get('/',(req,res)=>{
 });
 
 router.get('/list',async (req,res)=>{
-    let bds = new Board().select().then((bds) =>  bds);
+    let {cpg} = req.query;
+    cpg = (cpg&&cpg>=1) ? cpg : 1;
+
+    let stpgn = parseInt((cpg-1)/10)*10+1;
+
+    let stpgns = [];
+    for(let i = stpgn; i < stpgn+10 ; ++i){
+        let iscpg = (i == cpg) ? true : false;
+        let pgn = {'num': i, 'iscpg': iscpg}
+        stpgns.push(pgn);
+    }
+
+    let alpg = new Board().selectCount().then((cnt) => cnt);
+
+    let isprev = (stpgn-1>0) ? true : false;
+    let isnext = (stpgn < alpg) ? true : false;
+    let pgn = {'prev': stpgn - 1, 'next': stpgn + 9 + 1, 'isprev': isprev, 'isnext': isnext};
+
+    let bds = new Board().select(cpg).then((bds) =>  bds);
+
+
     //console.log(await bds);
-    res.render('board/list', {title:'게시판 목록', bds: await bds});
+    res.render('board/list', {title:'게시판 목록', bds: await bds, stpgns: stpgns, pgn: pgn});
 });
 
 router.get('/write',(req,res)=>{
