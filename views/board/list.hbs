@@ -4,8 +4,8 @@
             width: 700px; margin: 0 auto;
             table-layout: fixed;
         }
-        .alignlft {text-align-last: left}
-        .alignrgt {text-align-last: right}
+        .alignlft {text-align-last: left;}
+        .alignrgt {text-align-last: center;}
         .board td {text-align: center; padding: 7px;}
         /*.board {text-align: center; padding: 7px;}*/
         .board th {padding: 7px; background: lightgreen}
@@ -80,10 +80,10 @@
             <button type="button" name="findbtn" id="findbtn">검색하기</button>
         </td>
         <Td colspan="2" class="alignrgt">
-            {{#session.userid}}
-            <button type="button" id="newbtn" name="newbtn" disabled>새글쓰기</button>
-                    <!--{{#unless session.userid}}disabled{{/unless}}>새글쓰기</button>-->
-            {{/session.userid}}
+
+            <button type="button" id="newbtn" name="newbtn"
+                    {{#unless session.userid}}disabled{{/unless}}>새글쓰기</button>
+
         </Td>
     </tr>
     <tr>
