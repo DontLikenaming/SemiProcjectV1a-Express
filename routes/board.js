@@ -10,15 +10,14 @@ router.get('/',(req,res)=>{
 });
 
 router.get('/list',async (req,res)=>{
-    let {cpg} = req.query;
+    let [cpg, ftype, fkey] = [req.query.cpg, req.query.ftype, req.query.fkey];
     cpg = (cpg&&cpg>=1) ? parseInt(cpg) : 1;
-
 
     let ppg = 15
     let maxnum = cpg * ppg;
     let minnum = maxnum - (ppg - 1);
 
-    let result = new Board().select(cpg, minnum, maxnum, ppg).then((result) =>  result);
+    let result = new Board().select(cpg, minnum, maxnum, ppg, ftype, fkey).then((result) =>  result);
     let bds = result.then(r => r.bds);
     let alpg = result.then(r => r.cnt);
 
@@ -27,7 +26,7 @@ router.get('/list',async (req,res)=>{
         maxnum = cpg * ppg;
         minnum = maxnum - (ppg - 1);
 
-        result = new Board().select(cpg, minnum, maxnum, ppg).then((result) =>  result);
+        result = new Board().select(cpg, minnum, maxnum, ppg, ftype, fkey).then((result) =>  result);
         bds = result.then(r => r.bds);
         alpg = result.then(r => r.cnt);
     }
@@ -47,8 +46,9 @@ router.get('/list',async (req,res)=>{
     let isnext = (parseInt(stpgn / 10) < parseInt((await alpg / 15) / 10));
     let pgn = {'prev': cpg - 1, 'prev10': stpgn - 10, 'next': cpg + 1, 'next10': stpgn + 10, 'isprev': isprev, 'isnext': isnext};
 
+    let qry = `&ftype=${ftype}&fkey=${fkey}`;  //질의문자열 정의
     //console.log(await bds);
-    res.render('board/list', {title:'게시판 목록', bds: await bds, stpgns: stpgns, pgn: pgn});
+    res.render('board/list', {title:'게시판 목록', bds: await bds, stpgns: stpgns, pgn: pgn, qry: qry});
 });
 
 router.get('/write',(req,res)=>{

@@ -6,8 +6,8 @@ let boardsql = {
     select : ` select BNO, TITLE, USERID, VIEWS, to_char(regdate,'yyyy-mm-dd') regdate ` +
                 ` from board order by bno desc `,
     paging1 : ` select * from (select BNO, TITLE, USERID, VIEWS, to_char(regdate,'yyyy-mm-dd') regdate, ` +
-        ` row_number() over (order by bno desc) rowno from board) bd `,
-    paging2 : ` where rowno >= :1 and rowno <= :2 `,
+        ` row_number() over (order by bno desc) rowno from board `,
+    paging2 : ` ) bd where rowno >= :1 and rowno <= :2 `,
     selectCount : ` select count(bno) cnt from board `,
     selectOne : ` select bno, title, userid, contents, to_char(regdate,'yyyy-mm-dd hh-mi-ss') regdate ` +
                    ` from board where bno = :1 `,
@@ -18,6 +18,12 @@ let boardsql = {
     check : ` select bno from board where  `
 };
 
+const makewhere = (ftype, fkey) =>{
+    let where = ` where title = '${fkey}' `;
+    if(ftype==='userid') where = ` where userid = '${fkey}' `;
+    else if(ftype==='contents') where = ` where contents like '%${fkey}' `;
+    return where;
+}
 class Board {
 
     constructor(bno, title, userid, contents, views, regdate) {
@@ -47,20 +53,22 @@ class Board {
             await oracledb.closeConn(conn);
         }
     }
-    async select(pagenum, minnum, maxnum, ppg){
+    async select(pagenum, minnum, maxnum, ppg, ftype, fkey){
         let conn = null;
         let result = null;
         let params = [minnum, maxnum];
         let bds = [];
         let cnt = -1;
+        let where = '';
+        if(fkey!==undefined)where=makewhere(ftype, fkey)
         try{
             conn = await oracledb.makeConn();
 
-            cnt = await this.selectCount(conn);   //총 게시글 수 계산
+            cnt = await this.selectCount(conn, where);   //총 게시글 수 계산
             let idx = cnt-(ppg*(pagenum-1));
 
 
-            result = await conn.execute(boardsql.paging1 + boardsql.paging2, params, oracledb.options);
+            result = await conn.execute(boardsql.paging1 + where + boardsql.paging2, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
             let row = null;
@@ -140,12 +148,12 @@ class Board {
             await oracledb.closeConn(conn);
         }
     }
-    async selectCount(conn){
+    async selectCount(conn, where){
         let result = null;
         let params = [];
         let idx = -1
             try{
-            result = await conn.execute(boardsql.selectCount, params, oracledb.options);
+            result = await conn.execute(boardsql.selectCount + where, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
             let row = null;

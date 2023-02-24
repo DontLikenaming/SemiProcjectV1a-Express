@@ -4,9 +4,10 @@
             width: 700px; margin: 0 auto;
             table-layout: fixed;
         }
+        .alignlft {text-align-last: left}
         .alignrgt {text-align-last: right}
         .board td {text-align: center; padding: 7px;}
-        .board {text-align: center; padding: 7px;}
+        /*.board {text-align: center; padding: 7px;}*/
         .board th {padding: 7px; background: lightgreen}
         .board td:nth-child(2) {
             white-space: nowrap;
@@ -29,14 +30,19 @@
         .cpage {
             font: bold 24px '맑은고딕';
             color: red;
-
         }
-        .prev {color: #cccccc}
+        select{padding: 3px;}
+        input[type='text']{padding: 5px;}
     </style>
 {{/section}}
 {{#section 'script'}}
+
     <script>
+        let ftype = document.querySelector('#ftype');
+        let fkey = document.querySelector('#fkey');
+        let findbtn = document.querySelector('#findbtn');
         let newbtn = document.querySelector('#newbtn');
+
         //optional chaining (?.)
         //?앞의 객체변수가 null이거나 undefined라면
         //.뒤의 코드를 실행하지 않음
@@ -44,9 +50,14 @@
         location.href = '/board/write';
         });
 
-        let pagenation = document.querySelector('#pagenation');
-
+        findbtn?.addEventListener('click',()=>{
+            if(fkey.value) {
+                let qry = '?ftype=' + ftype.value + '&fkey=' + fkey.value;
+                location.href = '/board/list' + qry;
+            }
+        });
     </script>
+
 {{/section}}
 <h3>게시판</h3>
 <table class="board">
@@ -59,11 +70,20 @@
     </colgroup>
 
     <tr>
-        <Td colspan="5" class="alignrgt">
-                {{#if session.userid}}
-                    <button type="button" id="newbtn" name="newbtn">새글쓰기</button>
-                {{else}}&nbsp;{{/if}}
+        {{!--#if session.userid--}}
+        <td colspan="3" class="alignlft">
+            <select name="ftype" id="ftype">
+                <option value="title">제목</option>
+                <option value="contents">본문</option>
+                <option value="userid">작성자</option>
+            </select>
+            <input type="text" name="fkey" id="fkey">
+            <button type="button" name="findbtn" id="findbtn">검색하기</button>
+        </td>
+        <Td colspan="2" class="alignrgt">
+            <button type="button" id="newbtn" name="newbtn">새글쓰기</button>
         </Td>
+        {{!--else--}}{{!--/if--}}
     </tr>
     <tr>
         <th>번호</th>
@@ -86,10 +106,10 @@
 {{#pgn}}
     {{#if isprev}}
         <li>
-            <a href="?cpg={{prev10}}"> << </a>
+            <a href="?cpg={{prev10}}{{../qry}}"> << </a>
         </li>
         <li>
-            <a href="?cpg={{prev}}">이전</a>
+            <a href="?cpg={{prev}}{{../qry}}">이전</a>
         </li>
         {{else}}
         <li>
@@ -102,19 +122,19 @@
             <li class="cpage">{{num}}</li>
         {{else}}
             {{#if checknum}}
-                <li><a href="?cpg={{num}}">{{num}}</a>&ensp;</li>
+                <li><a href="?cpg={{num}}{{../qry}}">{{num}}</a>&ensp;</li>
             {{else}}
-                <li><a href="?cpg={{num}}">{{num}}</a></li>
+                <li><a href="?cpg={{num}}{{../qry}}">{{num}}</a></li>
             {{/if}}
         {{/if}}
     {{/stpgns}}
     {{#pgn}}
         {{#if isnext}}
             <li>
-                <a href="?cpg={{next}}">다음</a>
+                <a href="?cpg={{next}}{{../qry}}">다음</a>
             </li>
             <li>
-                <a href="?cpg={{next10}}"> >> </a>
+                <a href="?cpg={{next10}}{{../qry}}"> >> </a>
             </li>
         {{/if}}
     {{/pgn}}
