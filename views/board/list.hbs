@@ -70,7 +70,6 @@
     </colgroup>
 
     <tr>
-        {{!--#if session.userid--}}
         <td colspan="3" class="alignlft">
             <select name="ftype" id="ftype">
                 <option value="title">제목</option>
@@ -81,9 +80,11 @@
             <button type="button" name="findbtn" id="findbtn">검색하기</button>
         </td>
         <Td colspan="2" class="alignrgt">
-            <button type="button" id="newbtn" name="newbtn">새글쓰기</button>
+            {{#session.userid}}
+            <button type="button" id="newbtn" name="newbtn" disabled>새글쓰기</button>
+                    <!--{{#unless session.userid}}disabled{{/unless}}>새글쓰기</button>-->
+            {{/session.userid}}
         </Td>
-        {{!--else--}}{{!--/if--}}
     </tr>
     <tr>
         <th>번호</th>
