@@ -47,19 +47,17 @@ class Board {
             await oracledb.closeConn(conn);
         }
     }
-    async select(pagenum){
+    async select(pagenum, minnum, maxnum, ppg){
         let conn = null;
         let result = null;
-        let ppg = 15
-        let maxnum = pagenum * ppg;
-        let minnum = maxnum - (ppg - 1);
         let params = [minnum, maxnum];
         let bds = [];
+        let cnt = -1;
         try{
             conn = await oracledb.makeConn();
 
-            let idx = await this.selectCount();   //총 게시글 수 계산
-            idx = idx-(ppg*(pagenum-1));
+            cnt = await this.selectCount(conn);   //총 게시글 수 계산
+            let idx = cnt-(ppg*(pagenum-1));
 
 
             result = await conn.execute(boardsql.paging1 + boardsql.paging2, params, oracledb.options);
@@ -75,7 +73,8 @@ class Board {
         finally {
             await oracledb.closeConn(conn);
         }
-        return bds;
+        result = {'bds':bds, 'cnt':cnt};
+        return result;
     }
     async selectOne(bno){
         let conn = null;
@@ -141,14 +140,11 @@ class Board {
             await oracledb.closeConn(conn);
         }
     }
-    async selectCount(){
-        let conn = null;
+    async selectCount(conn){
         let result = null;
         let params = [];
         let idx = -1
             try{
-            conn = await oracledb.makeConn();
-
             result = await conn.execute(boardsql.selectCount, params, oracledb.options);
             await conn.commit();
             let rs = result.resultSet;
@@ -156,9 +152,6 @@ class Board {
             if((row = await rs.getRow()))idx = row.CNT;
 
         }catch (e){console.log(e)}
-        finally {
-            await oracledb.closeConn(conn);
-        }
         return idx;
     }
 }
