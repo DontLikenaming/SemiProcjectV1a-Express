@@ -11,25 +11,25 @@ router.get('/',(req,res)=>{
 
 router.get('/list',async (req,res)=>{
     let {cpg} = req.query;
-    cpg = (cpg&&cpg>=1) ? cpg : 1;
+    cpg = (cpg&&cpg>=1) ? parseInt(cpg) : 1;
 
     let stpgn = parseInt((cpg-1)/10)*10+1;
-
+    let alpg = new Board().selectCount().then((cnt) => cnt);
     let stpgns = [];
     for(let i = stpgn; i < stpgn+10 ; ++i){
-        let iscpg = (i == cpg) ? true : false;
-        let pgn = {'num': i, 'iscpg': iscpg}
-        stpgns.push(pgn);
+        if(i<=Math.ceil(await alpg/15)) {
+            let iscpg = (i == cpg);
+            let checknum = (i < 11);
+            let pgn = {'num': `${i}`, 'iscpg': iscpg, 'checknum': checknum};
+            stpgns.push(pgn);
+        }
     }
 
-    let alpg = new Board().selectCount().then((cnt) => cnt);
-
-    let isprev = (stpgn-1>0) ? true : false;
-    let isnext = (stpgn < alpg) ? true : false;
-    let pgn = {'prev': stpgn - 1, 'next': stpgn + 9 + 1, 'isprev': isprev, 'isnext': isnext};
+    let isprev = (stpgn - 1 > 0);
+    let isnext = (parseInt(stpgn / 10) < parseInt((await alpg / 15) / 10));
+    let pgn = {'prev': cpg - 1, 'prev10': stpgn - 10, 'next': cpg + 1, 'next10': stpgn + 10, 'isprev': isprev, 'isnext': isnext};
 
     let bds = new Board().select(cpg).then((bds) =>  bds);
-
 
     //console.log(await bds);
     res.render('board/list', {title:'게시판 목록', bds: await bds, stpgns: stpgns, pgn: pgn});
